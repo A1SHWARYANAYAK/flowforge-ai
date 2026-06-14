@@ -1,0 +1,380 @@
+{
+  "name": "FlowForge AI",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        272
+      ],
+      "id": "f297aa0c-133a-47f9-82e4-19f8d1cf9fbb",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "641c5c76-ea47-4ba1-8731-65b31e24daf6",
+              "name": "topic",
+              "value": "Latest trends in LLM evaluation",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        272
+      ],
+      "id": "965c627f-c15a-4ef7-9a9f-e99510ecdf00",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "=output",
+        "binaryPropertyName": "=data",
+        "options": {
+          "fileName": "report.md"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        272
+      ],
+      "id": "d4e91638-5a74-4cbe-9058-21efe6f6753d",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI research expert.\n\nGiven a topic, write an Overview section.\n\nRequirements:\n\n- 1-2 paragraphs\n- Explain why the topic matters\n- Be concise and technical\n\nTopic:\n\n{{$json.topic}}\n\nReturn markdown beginning with:\n\n## Overview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        672
+      ],
+      "id": "b48eaad0-1b73-4595-bc00-65926921f72b",
+      "name": "Overview Expert"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI research expert.\n\nGiven a topic, describe the major challenges.\n\nRequirements:\n\n- 3-5 bullet points\n- Explain each challenge briefly\n\nTopic:\n\n{{$json.topic}}\n\nReturn markdown beginning with:\n\n## Challenges",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        -240
+      ],
+      "id": "8834f594-afad-456a-a1fb-6a3a2ce19ed5",
+      "name": "Challenges Expert"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI futurist.\n\nGiven a topic, describe emerging developments.\n\nRequirements:\n\n- 3-5 bullet points\n- Mention likely future directions\n\nTopic:\n\n{{$json.topic}}\n\nReturn markdown beginning with:\n\n## Future Directions",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        160
+      ],
+      "id": "4fa87fb6-cf43-4843-9730-57e20d1393d2",
+      "name": "Future Trends Expert"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        896
+      ],
+      "id": "1561005b-3464-4185-86c9-0027479a9d6f",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uND3mhebmMCzmElX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        -16
+      ],
+      "id": "fe427be0-c3af-4a78-bd51-76b06c7431c6",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uND3mhebmMCzmElX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        384
+      ],
+      "id": "ed11e9d1-bfbb-4167-bd21-bbf24497f832",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uND3mhebmMCzmElX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        256
+      ],
+      "id": "7575614a-dd77-4743-8fef-d6d2d833a688",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a senior AI research editor.\n\nCombine these sections into a polished markdown report:\n\n{{$input.all().map(item => item.json.output).join('\\n\\n')}}\n\nReturn valid markdown only.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1248,
+        272
+      ],
+      "id": "8b2d51d4-257d-463f-8b15-53926f0a493e",
+      "name": "Final Report Editor"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1328,
+        496
+      ],
+      "id": "7e17abbe-6c84-4b70-9aa7-7ddb24bffef0",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uND3mhebmMCzmElX",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        272
+      ],
+      "id": "0359a29d-a731-4b81-9b58-5956d0564299",
+      "name": "Limit"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Overview Expert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Challenges Expert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Future Trends Expert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Overview Expert",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Challenges Expert",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Future Trends Expert",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Future Trends Expert": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Overview Expert": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Challenges Expert": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Final Report Editor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Report Editor": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Final Report Editor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1d1022f2-89ac-420e-936a-7e861c5ed643",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a3b0404a6d57ffccf2576d4bbf2d7011b24c54fedc8afcf6ea8d1d79a8704652"
+  },
+  "nodeGroups": [],
+  "id": "3L9iDvUn9b0rG7O4",
+  "tags": []
+}
