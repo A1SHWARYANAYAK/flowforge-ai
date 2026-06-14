@@ -1,0 +1,46 @@
+# macOS
+
+.DS_Store
+
+# Python
+
+**pycache**/
+*.py[cod]
+
+# Environment variables
+
+.env
+.env.*
+
+# Logs
+
+*.log
+
+# VS Code
+
+.vscode/
+
+# JetBrains
+
+.idea/
+
+# Node
+
+node_modules/
+
+# Temporary files
+
+tmp/
+temp/
+
+# Generated reports
+
+reports/
+
+# Jupyter notebooks
+
+.ipynb_checkpoints/
+
+# n8n local files
+
+.n8n/
